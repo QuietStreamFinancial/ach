@@ -21,12 +21,16 @@ module ACH
     280  # ACH Automated Accounting Advices
   ]
 
-  class InvalidError < RuntimeError
+  DEFAULT_EOL = "\r\n"
+
+  def self.eol
+    DEFAULT_EOL
   end
 end
 
 require 'time'
 require 'iconv' if RUBY_VERSION < '1.9'
+require 'ach/errors'
 require 'ach/field_identifiers'
 require 'ach/ach_file'
 require 'ach/batch'
