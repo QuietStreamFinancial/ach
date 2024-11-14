@@ -1,18 +1,11 @@
-#ACH
+# ACH
 
-[![Build Status](https://travis-ci.org/jm81/ach.svg?branch=master)](https://travis-ci.org/jm81/ach)
+ACH is a Ruby helper for building and parsing ACH files.
 
-ach is a Ruby helper for builder ACH files. In particular, it helps with field
+In particular, it helps with field
 order and alignment, and adds padding lines to end of file.
 
-**This library has only been used in one production application and for very
-limited purposes. Please test thoroughly before using in a production
-environment.**
-
-See [ACH::Builder](http://search.cpan.org/~tkeefer/ACH-Builder-0.03/lib/ACH/Builder.pm)
-for a similar Perl library
-
-##Example
+## Example
 
 You should consult a copy of the [ACH Rules](http://www.nacha.org) for details
 on individual fields. You can probably obtain a copy from your bank.
@@ -30,6 +23,11 @@ fh.immediate_destination = '000000000'
 fh.immediate_destination_name = 'BANK NAME'
 fh.immediate_origin = '000000000'
 fh.immediate_origin_name = 'BANK NAME'
+# Optional - This value is used in the File Creation Date/Time attributes - if excluded will default to Time.now
+# Note that you may wish to modify the time zone here if your environment has a different time zone than the banks
+# For example if your server is in UTC and the bank's is in US/Eastern, any files sent after 8pm Eastern/Midnight UTC
+#   would have a File Creation Date of the next day from the bank's perspective
+fh.transmission_datetime = Time.now
 
 # Batch
 batch = ACH::Batch.new
@@ -38,7 +36,7 @@ bh.company_name = 'Company Name'
 bh.company_identification = '123456789' # Use 10 characters if you're not using an EIN
 bh.standard_entry_class_code = 'PPD'
 bh.company_entry_description = 'DESCRIPTION'
-bh.company_descriptive_date = Date.today
+bh.company_descriptive_date = Date.today # Or string with 'SDHHMM' for same day ACH
 bh.effective_entry_date = ACH::NextFederalReserveEffectiveDate.new(Date.today).result
 bh.originating_dfi_identification = '00000000'
 ach.batches << batch
@@ -73,6 +71,6 @@ ach.batches.first.entries.first.addenda.first.payment_data
 
 **Note:** When adding an amount to your ach file, it needs to be in cents. So you'll want to multiply any dollar amounts by 100
 
-##Copyright
+## Copyright
 
 Copyright (c) 2008-2009 Jared E Morgan, released under the MIT license
